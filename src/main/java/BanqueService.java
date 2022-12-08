@@ -7,10 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class BanqueService {
 
@@ -84,6 +81,20 @@ public class BanqueService {
      */
     public List<Compte> getListFromFile(String filePath) throws IOException {
       return   mapper.readValue(this.getClass().getResourceAsStream(filePath), LinkedList.class);
+
+    }
+
+    /**
+     *
+     * @param listComptes
+     */
+    public void getCompteMax(List<Compte> listComptes) {
+        double maxSolde;
+        Optional<Double> maxOpt = listComptes.stream().map(Compte::getSolde).max((o1, o2) -> (int) (o1 - o2));
+        if (maxOpt.isPresent()){
+            maxSolde =  maxOpt.get();
+            Compte compte1 = listComptes.stream().filter(compte -> compte.getSolde() == maxSolde).findFirst().get();
+        }
 
     }
 }

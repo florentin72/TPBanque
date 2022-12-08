@@ -3,6 +3,7 @@ import model.Client;
 import model.Compte;
 import org.apache.log4j.Logger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +31,22 @@ public class Main {
         LOGGER.info("trie des comptes");
         listComptes =banqueService.sortBySolde(listComptes);
         System.out.println(listComptes);
-        banqueService.addCompte(listComptes);
+        //banqueService.addCompte(listComptes);
         Gson gson = new Gson();
         LOGGER.info("Affichage de la liste en json");
-        System.out.println(gson.toJson(listComptes));
+        System.out.println();
 
+        try {
+            banqueService.writeInFile(gson.toJson(listComptes));
+        } catch (IOException e) {
+            LOGGER.error("Fichier introuvable",e);
+        }
+        try {
+            List<Compte> listFromFile = banqueService.getListFromFile("storage.json");
+
+        } catch (IOException e) {
+            LOGGER.error("Fichier introuvable",e);
+        }
     }
 
 

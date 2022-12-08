@@ -1,13 +1,16 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
 import model.Banque;
 import model.Client;
 import model.Compte;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class BanqueService {
 
@@ -15,17 +18,33 @@ public class BanqueService {
     Scanner scanner =new Scanner(new
             InputStreamReader(System.in));
 
+    ObjectMapper mapper = new ObjectMapper();
+
+    /**
+     *
+     */
     private void afficherClient() {
         for (Client c : Banque.getBanque()){
             System.out.println(c.getNom());
         }
     }
 
-
+    /**
+     *
+     * @param listComptes
+     * @return
+     */
     public List<Compte> sortBySolde(List<Compte> listComptes) {
-       return  listComptes.stream().sorted(Comparator.comparing(Compte::getSolde)).collect(Collectors.toList());
+
+        listComptes.sort((o1, o2) -> (int) (o1.getSolde() - o2.getSolde()));
+        return listComptes;
+       //return  listComptes.stream().sorted(Comparator.comparing(Compte::getSolde)).collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param listCompte
+     */
     public void addCompte(List<Compte> listCompte) {
 
         if (listCompte == null) {
@@ -43,6 +62,28 @@ public class BanqueService {
         double solde = scanner.nextDouble();
 
         listCompte.add(new Compte(solde,numeroComtpe, new Client(prenom,nom))) ;
+
+    }
+
+    /**
+     *
+     * @param listComptes
+     * @throws IOException
+     */
+    public void writeInFile(String listComptes) throws IOException {
+        FileWriter fileWriter = new FileWriter(new File("src/main/resources/storage.json"));
+        fileWriter.write(listComptes);
+        fileWriter.flush();
+    }
+
+    /**
+     *
+     * @param filePath
+     * @return
+     * @throws IOException
+     */
+    public List<Compte> getListFromFile(String filePath) throws IOException {
+      return   mapper.readValue(this.getClass().getResourceAsStream(filePath), LinkedList.class);
 
     }
 }

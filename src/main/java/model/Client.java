@@ -1,25 +1,19 @@
 package model;
 
-import java.util.List;
+import java.io.Serializable;
 
-public class Client {
+public class Client implements Serializable {
     private String nom;
-    private List<Compte> listCompte;
-
-    public Client(String nom) {
+    private String prenom;
+    public Client(String prenom, String nom) {
         this.nom = nom;
+        this.prenom = prenom;
     }
 
     public Client() {
     }
 
-    public List<Compte> getListCompte() {
-        return listCompte;
-    }
 
-    public void setListCompte(List<Compte> listCompte) {
-        this.listCompte = listCompte;
-    }
 
     public String getNom() {
         return nom;
@@ -30,4 +24,11 @@ public class Client {
     }
 
 
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
+    }
 }

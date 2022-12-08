@@ -1,26 +1,39 @@
-import java.io.InputStreamReader;
-import java.util.Scanner;
+import com.google.gson.Gson;
+import model.Client;
+import model.Compte;
+import org.apache.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
+    static Logger LOGGER = Logger.getLogger(Main.class);
     public static void main (String args[]){
-        System.out.println("Welcome to my bank !! ");
-        Scanner scanner = new Scanner(new
-                InputStreamReader(System.in));
-        int action = 0;
+        org.apache.log4j.BasicConfigurator.configure();
+        LOGGER.info("début de l'appli");
         BanqueService banqueService = new BanqueService();
-        while(action != 5){
-            System.out.println("Que voulez vous faire");
-            System.out.println("1 : ajout client");
-            System.out.println("2 : ajout d'un compte pour un client");
-            System.out.println("3 : afficher la liste des clients");
-            System.out.println("4 : trouver le client avec le  plus grand compte");
-            System.out.println("5 : stop");
+        List<Compte> listComptes = new ArrayList<>();
+        Client client = new Client("Ali","Gator");
+        LOGGER.debug("Ajout d'un Compte pour " + client.getPrenom() + " " + client.getNom());
+        Compte compte = new Compte(1550,1,client);
+        LOGGER.debug("Ajout d'un Compte pour " + client.getPrenom() + " " + client.getNom());
+        Compte compte2 = new Compte(1000,2,client);
+        LOGGER.debug("Ajout d'un Compte pour " + client.getPrenom() + " " + client.getNom());
+        Compte compte3 = new Compte(150.50,3,client);
 
-            //read a line using scanner object.
-            action = scanner.nextInt();
-            banqueService.traiterAction(action);
-        }
+        listComptes.add(compte);
+        listComptes.add(compte2);
+        listComptes.add(compte3);
+
+        System.out.println(listComptes);
+        LOGGER.info("trie des comptes");
+        listComptes =banqueService.sortBySolde(listComptes);
+        System.out.println(listComptes);
+        banqueService.addCompte(listComptes);
+        Gson gson = new Gson();
+        LOGGER.info("Affichage de la liste en json");
+        System.out.println(gson.toJson(listComptes));
 
     }
 

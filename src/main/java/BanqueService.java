@@ -1,44 +1,19 @@
 import model.Banque;
 import model.Client;
 import model.Compte;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Optional;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class BanqueService {
 
-    public void traiterAction(int action){
-        Scanner scanner = new Scanner(new
-                InputStreamReader(System.in));
-        String nom;
-        int montantCompte;
-        switch (action){
-            //ajout client
-            case 1 :
-                System.out.println("Nom du client ? ");
-                 nom = scanner.nextLine();
-                ajoutClient(nom);
-                break;
-            //ajout compte
-            case 2 :
-                System.out.println("Nom du client ? ");
-                 nom = scanner.nextLine();
-                System.out.println("montant du compte ? ");
-                montantCompte = scanner.nextInt();
-                ajoutCompteClient(nom,montantCompte);
-                break;
-            case 3 :
-                afficherClient();
-                break;
 
-            default:
-                throw new IllegalStateException("Aucune action " + action + " n'existe");
-        }
-
-    }
+    Scanner scanner =new Scanner(new
+            InputStreamReader(System.in));
 
     private void afficherClient() {
         for (Client c : Banque.getBanque()){
@@ -46,23 +21,28 @@ public class BanqueService {
         }
     }
 
-    private void ajoutCompteClient(String nom, int montant) {
-        Optional<Client> clientOptional = Banque.getBanque().stream().filter(c -> nom.equals(c.getNom())).findFirst();
 
-        if (clientOptional.isPresent() ){
-           Client client = clientOptional.get();
-
-           if (CollectionUtils.isEmpty(client.getListCompte())){
-               client.setListCompte(new ArrayList<>());
-           }
-           client.getListCompte().add(new Compte(montant));
-       }
-
+    public List<Compte> sortBySolde(List<Compte> listComptes) {
+       return  listComptes.stream().sorted(Comparator.comparing(Compte::getSolde)).collect(Collectors.toList());
     }
 
-    private void ajoutClient(String nom) {
-        Client client = new Client(nom);
-        Banque.getBanque().add(client);
+    public void addCompte(List<Compte> listCompte) {
+
+        if (listCompte == null) {
+            listCompte = new ArrayList<>();
+        }
+        System.out.println("Nom du client ? ");
+        String nom = scanner.nextLine();
+        System.out.println("prenom du client ? ");
+        String prenom = scanner.nextLine();
+
+        System.out.println("numero du compte ? ");
+        int numeroComtpe = scanner.nextInt();
+
+        System.out.println("solde du compte ? ");
+        double solde = scanner.nextDouble();
+
+        listCompte.add(new Compte(solde,numeroComtpe, new Client(prenom,nom))) ;
 
     }
 }
